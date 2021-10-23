@@ -5,6 +5,13 @@ import "./style.css";
 import RecordingCount from "./RecordingCount";
 import {storage} from '../../firebase/config';
 import { ref ,uploadBytes} from "@firebase/storage";
+import LoadingButton from '@mui/lab/LoadingButton';
+import Snackbar from '@mui/material/Snackbar';
+import MuiAlert from '@mui/material/Alert';
+
+const Alert = React.forwardRef(function Alert(props, ref) {
+  return <MuiAlert elevation={6} ref={ref} variant="filled" {...props} />;
+});
 
 
 export default function Main() {
@@ -13,6 +20,8 @@ export default function Main() {
   const [playStatus, setPlayStatus] = useState(Sound.status.STOPPED);
   const [audio, setAudio] = useState(null);
   const [blobFile, setBlobFile] = useState(null);
+  const [isLoading, setLoader]  =useState(false);
+  const [open, setOpen]  = useState(false);
 
   const startListening = () => {
     navigator.mediaDevices
@@ -40,7 +49,13 @@ export default function Main() {
       });
   };
 
-  
+  const handleClose = (event, reason) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpen(false);
+  };
 
   const record = async () => {
     navigator.permissions.query({ name: "microphone" }).then(function(result) {
@@ -76,18 +91,22 @@ export default function Main() {
   };
 
   const save = () => {
+    setLoader(true);
     // TODO: send to database
     var uniq = 'id' + (new Date()).getTime();
-    const storeRef = ref(storage, uniq);
+    const storeRef = ref(storage, "audio/" + uniq);
     uploadBytes(storeRef,blobFile).then((snap)=>{
       console.log("file uploaded successfully");
+      setLoader(false);
+      setOpen(true);
+      setTitle("Record");
+      const button = document.querySelector(".button");
+      button.classList.remove("play");
+      setPlayStatus(Sound.status.STOPPED);
     }).catch((error)=>{
       console.log("error", error);
     });
-    setTitle("Record");
-    const button = document.querySelector(".button");
-    button.classList.remove("play");
-    setPlayStatus(Sound.status.STOPPED);
+    
   };
 
   const playStop = () => {
@@ -97,6 +116,11 @@ export default function Main() {
 
   return (
     <div className="main-container">
+      <Snackbar open={open} onClose={handleClose} autoHideDuration={5000} >
+        <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
+          File uploaded successfully !
+        </Alert>
+      </Snackbar>
       <Button
         title={title}
         record={record}
@@ -107,12 +131,13 @@ export default function Main() {
       />
       {title === "Play" ? (
         <div>
-          <button className="redo-button" onClick={reset}>
+          <button className="redo-button btn" onClick={reset}>
             Redo
           </button>
-          <button className="save-button" onClick={save}>
+          {!isLoading?<button className="save-button btn" onClick={save}>
             Save
-          </button>
+          </button>:<LoadingButton loading variant="outlined">Save</LoadingButton>}
+          
         </div>
       ) : (
         <>

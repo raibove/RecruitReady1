@@ -20,13 +20,13 @@
   }
   
   .redo-button {
-    margin-right: 5px;
+    margin-right: 8px;
     border-radius: 3px;
     color: #70b244;
     border-color: #c7cbca;
-    font-size: 10px;
-    height: 20px;
-    width: 45px;
+    font-size: 16px;
+    height: 40px;
+    width: 65px;
   }
   
   .save-button {
@@ -34,9 +34,9 @@
     border: none;
     background-color: #70b244;
     color: #fff;
-    font-size: 10px;
-    height: 20px;
-    width: 45px;
+    font-size: 16px;
+    height: 40px;
+    width: 65px;
   }
   
   .pulse {
