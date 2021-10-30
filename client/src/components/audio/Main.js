@@ -4,7 +4,6 @@ import Button from "./Button";
 import "./style.css";
 import RecordingCount from "./RecordingCount";
 import {storage} from '../../firebase/config';
-import { ref ,uploadBytes} from "@firebase/storage";
 import LoadingButton from '@mui/lab/LoadingButton';
 import Snackbar from '@mui/material/Snackbar';
 import MuiAlert from '@mui/material/Alert';
@@ -25,6 +24,8 @@ export default function Main() {
   const [isLoading, setLoader]  =useState(false);
   const [open, setOpen]  = useState(false);
   
+
+  const storageRef = storage.ref();
 
 
   const startListening = () => {
@@ -98,9 +99,8 @@ export default function Main() {
     setLoader(true);
     // TODO: send to database
     var uniq = 'id' + (new Date()).getTime();
-    const storeRef = ref(storage, "audio/" + uniq);
-    uploadBytes(storeRef,blobFile).then((snap)=>{
-      console.log("file uploaded successfully");
+    const reff = storageRef.child("audio/" + uniq);
+    reff.put(blobFile).then((snap)=>{
       setLoader(false);
       setOpen(true);
       setTitle("Record");

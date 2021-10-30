@@ -1,7 +1,6 @@
 import React from 'react'
 import './login.css';
-import {useEffect, useState} from 'react';
-import { signInWithEmailAndPassword} from 'firebase/auth';
+import { useState} from 'react';
 import { auth } from '../../firebase/config';
 import { Link } from 'react-router-dom';
 
@@ -14,7 +13,7 @@ function Login(props) {
 
     const handleSubmit = (e) =>{
         e.preventDefault();
-        signInWithEmailAndPassword(auth, email, password).then((res)=>{
+        auth.signInWithEmailAndPassword(email, password).then((res)=>{
             console.log(res);
             props.history.push("/dashboard");
         }).catch((error)=>{

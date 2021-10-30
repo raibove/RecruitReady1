@@ -1,18 +1,18 @@
 import React from 'react'
-import {useEffect, useState} from 'react';
-import {getAuth, createUserWithEmailAndPassword} from 'firebase/auth';
+import { useState} from 'react';
 import { auth } from '../../firebase/config';
 import { Link } from 'react-router-dom';
 
-function Signup() {
+function Signup(props) {
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
     const handleSubmit = (e) =>{
         e.preventDefault();
-        createUserWithEmailAndPassword(auth, email, password).then((res)=>{
+        auth.createUserWithEmailAndPassword( email, password).then((res)=>{
             console.log("res", res);
+            props.history.push("/dashboard");
         }).catch((error)=>{
             console.log("error", error);
         });
