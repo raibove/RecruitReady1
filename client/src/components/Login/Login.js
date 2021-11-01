@@ -14,7 +14,7 @@ function Login(props) {
 
     const handleSubmit = (e) =>{
         e.preventDefault();
-        signInWithEmailAndPassword(auth, email, password).then((res)=>{
+        auth.signInWithEmailAndPassword(email, password).then((res)=>{
             console.log(res);
             props.history.push("/dashboard");
         }).catch((error)=>{

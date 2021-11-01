@@ -2,7 +2,13 @@ import React from "react";
 // import Main from "../audio/Main";
 import './dashboard.css'
 import {Link} from "react-router-dom"
-function DashBoard(){
+import { useEffect, useState } from "react";
+import Main from "../audio/Main";
+import { db } from "../../firebase/config";
+
+
+
+function DashBoard() {
     return (
         <div className="container">
             <h1 className="text-center mt-5" style={{fontWeight:"700"}}>Interview Preparation</h1>
@@ -63,4 +69,5 @@ function DashBoard(){
         </div>
     );
 }
+
 export default DashBoard;
