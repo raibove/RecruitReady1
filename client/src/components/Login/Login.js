@@ -1,6 +1,6 @@
 import React from 'react'
 import './login.css';
-import {useEffect, useState} from 'react';
+import {useState} from 'react';
 import { signInWithEmailAndPassword} from 'firebase/auth';
 import { auth } from '../../firebase/config';
 import { Link } from 'react-router-dom';
@@ -60,7 +60,7 @@ function Login(props) {
 
       </div>
       <div class="col-sm-6 px-0 d-none d-sm-block">
-        <img src="https://mdbootstrap.com/img/Photos/new-templates/bootstrap-login-form/img3.jpg" alt="Login image" class="w-100 vh-100" style={{objectFit: "cover", objectPosition: "left"}}/>
+        <img src="https://images.unsplash.com/photo-1572028629184-6ecbfc2fcb86?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=880&q=80" alt="Login" class="w-100 vh-100" style={{objectFit: "cover", objectPosition: "left"}}/>
       </div>
     </div>
   </div>

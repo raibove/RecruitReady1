@@ -1,6 +1,6 @@
 import React from 'react'
-import {useEffect, useState} from 'react';
-import {getAuth, createUserWithEmailAndPassword} from 'firebase/auth';
+import { useState} from 'react';
+import {createUserWithEmailAndPassword} from 'firebase/auth';
 import { auth } from '../../firebase/config';
 import { Link } from 'react-router-dom';
 
