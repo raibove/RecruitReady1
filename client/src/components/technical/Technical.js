@@ -2,6 +2,7 @@ import './technical.css';
 import React, {useEffect, useRef, useState} from 'react';
 import {firestore} from '../../firebase/config';
 import Sound from "react-sound";
+import useInterval from ".././audio/useInterval";
 
 
 function Technical() {
@@ -9,7 +10,16 @@ function Technical() {
 	const [questions, setQuestions] = useState([]);	
 	const [mediaRecorder, setMediaRecorder] = useState(null);
 	const [ind, setInd] = useState(0)
+	let startTime = 0
+	let endTime = 0
 
+	const keywords = [
+		["Search", "sorted", "array", "repeatedly", "dividing", "search", "interval", "half", "whole", "array", "value", "of", "the", "search", "key", "less", "than", "item", "in", "middle", "interval", "interval", "lower", "half", "upper", "half", "Repeatedly", "check", "until", "found",  "interval", "empty"],
+		["stack", "linked", "list", "array", "string", "tree", "binary", "bst", "queue", "heap", "trie", "graph", "singly", "doubly", "min", "max", "search", "circular", "hash", "table", "hashmap", "map", "set", "hashset", "priority", "deque", "vector", "segment", "matrix", "2d"],
+		["many", "multiple", "forms", "run", "time", "compile", "OOPs", "OOP", "instances", "different", "poly", "morph", "property", "object", "oriented", "programming", "overloading", "function", "overriding", "virtual", "class", "classes", "names", "friend", "polymorphism", "static", "dynamic", "binding", "operator"],
+		["linked", "list", "link" ,"next", "data", "nodes", "node", "memory", "fields", "two", "address", "pointer", "null", "head", "linear","structure","reference","field","doubly", "circular", "singly"],
+		["object", "oriented", "programming", "oop", "derive", "class", "another", "parent", "child", "single", "multiple", "multilevel", "sub", "super", "properties", "inherited", "code", "re-usability", "methods", "existing", "reuse", "Hierarchical", "hybrid"    , "private", "protected", "public"]
+	]
 	const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
 	const mic = new SpeechRecognition()
 
@@ -44,6 +54,7 @@ function Technical() {
 		.then(stream => {
 		  const newMediaRecorder = new MediaRecorder(stream);
 		  newMediaRecorder.start();
+		  startTime = new Date()
 		  let chunks = [];
 		  newMediaRecorder.ondataavailable = function(e) {
 			chunks.push(e.data);
@@ -58,6 +69,10 @@ function Technical() {
 			audio.src = audioURL;
 			t[index].blobFile = blob  
 			t[index].audio = audio
+			endTime = new Date()
+			let tm = endTime - startTime
+			tm = tm/1000
+			t[index].time = tm
 		  };
 		  setMediaRecorder(newMediaRecorder);
 		  setQuestions(t)
@@ -66,7 +81,6 @@ function Technical() {
 		  console.log("The following getUserMedia error occured: " + err);
 		});
 	}
-
 
 	const setText = (transcript)=>{
 		let temp = questions 
@@ -82,7 +96,6 @@ function Technical() {
 			navigator.mediaDevices.getUserMedia({ audio: true }).then(() => {});
 		  }
 		});
-
 		await startListening(index);
 	  };
 	
@@ -97,6 +110,7 @@ function Technical() {
 					ele.blobFile = null 
 					ele.audio = null 
 					ele.text = null
+					ele.time = 0
 					ele.playStatus = Sound.status.STOPPED
 					data.push(ele)
 				});
@@ -107,10 +121,30 @@ function Technical() {
 		})
 },[])
 
+const calculatePercentage = ()=>{	
+	questions.forEach((q,i)=>{
+		if(q.text!==null){
+			var keyword = new Set(keywords[i]);
+			let answer = q.text.split(" ");
+			let count = 0;
+			for(let i =0;i<answer.length;i++){
+				if(keyword.has(answer[i])){
+					count++;
+				}
+			}
+			console.log(count)
+		}else{
+			console.log("")
+		}
+	})
+	
+	
+}
 
 const playStop = (index) => {
 	let t = questions 
-	questions[index].playStatus = Sound.status.STOPPED
+	t[index].playStatus = Sound.status.STOPPED
+	setQuestions(t)
   };
 
     return (
@@ -141,7 +175,7 @@ const playStop = (index) => {
 						let temp = [...questions ]
 						temp[index].status = "stop" 
 						setQuestions(temp)
-
+						setInd((index)=> index)
 						record(data, index)
 
 					}}><i class="fas fa-tag mr-2"></i>Start</li>
@@ -176,7 +210,7 @@ const playStop = (index) => {
 									let temp = [...questions ]
 									temp[index].status = "save"
 									setQuestions(temp)
-									setInd(index)
+									console.log(temp)
 							}}><i class="fas fa-clock mr-2"></i>Save</li>
 							<li class="tag__item play blue" onClick = {()=>{
 									let temp = [...questions ]
@@ -213,10 +247,28 @@ const playStop = (index) => {
 			);
 		})}
 		</div>
-		<button className="report-button">Generate Report</button>
-
+		<button type="button"  className="btn btn-primary report-button" data-toggle="modal" data-target="#exampleModal" onClick={()=>calculatePercentage()}>Generate Report</button>
 		</section>
 
+		<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					...
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-primary">Save changes</button>
+				</div>
+				</div>
+			</div>
+			</div>
     </div>
     )
 }
