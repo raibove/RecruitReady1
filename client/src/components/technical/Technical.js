@@ -10,14 +10,15 @@ function Technical() {
 	const [questions, setQuestions] = useState([]);	
 	const [mediaRecorder, setMediaRecorder] = useState(null);
 	const [ind, setInd] = useState(0)
+	const [text, setText] = useState("")
 	let startTime = 0
 	let endTime = 0
 
 	const keywords = [
 		["Search", "sorted", "array", "repeatedly", "dividing", "search", "interval", "half", "whole", "array", "value", "of", "the", "search", "key", "less", "than", "item", "in", "middle", "interval", "interval", "lower", "half", "upper", "half", "Repeatedly", "check", "until", "found",  "interval", "empty"],
-		["stack", "linked", "list", "array", "string", "tree", "binary", "bst", "queue", "heap", "trie", "graph", "singly", "doubly", "min", "max", "search", "circular", "hash", "table", "hashmap", "map", "set", "hashset", "priority", "deque", "vector", "segment", "matrix", "2d"],
 		["many", "multiple", "forms", "run", "time", "compile", "OOPs", "OOP", "instances", "different", "poly", "morph", "property", "object", "oriented", "programming", "overloading", "function", "overriding", "virtual", "class", "classes", "names", "friend", "polymorphism", "static", "dynamic", "binding", "operator"],
 		["linked", "list", "link" ,"next", "data", "nodes", "node", "memory", "fields", "two", "address", "pointer", "null", "head", "linear","structure","reference","field","doubly", "circular", "singly"],
+		["stack", "linked", "list", "array", "string", "tree", "binary", "bst", "queue", "heap", "trie", "graph", "singly", "doubly", "min", "max", "search", "circular", "hash", "table", "hashmap", "map", "set", "hashset", "priority", "deque", "vector", "segment", "matrix", "2d"],
 		["object", "oriented", "programming", "oop", "derive", "class", "another", "parent", "child", "single", "multiple", "multilevel", "sub", "super", "properties", "inherited", "code", "re-usability", "methods", "existing", "reuse", "Hierarchical", "hybrid"    , "private", "protected", "public"]
 	]
 	const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
@@ -81,14 +82,14 @@ function Technical() {
 		  console.log("The following getUserMedia error occured: " + err);
 		});
 	}
-
+/*
 	const setText = (transcript)=>{
 		let temp = questions 
 		temp[ind].text = transcript 
 		setQuestions(temp)
 
 	}
-
+*/
 	const record = async (data, index) => {
 		navigator.permissions.query({ name: "microphone" }).then(function(result) {
 		  if (result.state !== "granted") {
@@ -126,9 +127,12 @@ const calculatePercentage = ()=>{
 		if(q.text!==null){
 			var keyword = new Set(keywords[i]);
 			let answer = q.text.split(" ");
+			console.log(answer)
+			console.log(keyword)
 			let count = 0;
 			for(let i =0;i<answer.length;i++){
 				if(keyword.has(answer[i])){
+
 					count++;
 				}
 			}
@@ -209,7 +213,9 @@ const playStop = (index) => {
 							<li class="tag__item" onClick={()=>{
 									let temp = [...questions ]
 									temp[index].status = "save"
+									temp[index].text = text
 									setQuestions(temp)
+
 									console.log(temp)
 							}}><i class="fas fa-clock mr-2"></i>Save</li>
 							<li class="tag__item play blue" onClick = {()=>{
