@@ -144,7 +144,7 @@ function Technical() {
 			console.log(error);
 		})
 },[])
-
+/*
 const calculatePercentage = ()=>{	
 	questions.forEach((q,i)=>{
 		if(q.text!==null){
@@ -167,8 +167,28 @@ const calculatePercentage = ()=>{
 		}
 		handleOpen();
 	})
+	*/
 	
-	
+	const calculateP = (i)=>{
+		let q = questions[i]
+		if(q.text!==null){
+			var keyword = new Set(keywords[i]);
+			let answer = q.text.split(" ");
+			console.log(answer)
+			console.log(keyword)
+			let count = 0;
+			for(let j =0;j<answer.length;j++){
+				if(keyword.has(answer[j])){
+					count++;
+				}
+			}
+			console.log(count)
+			let c = [...correct]
+			c[i] = count
+			setCorrect(c)
+		}else{
+			console.log("")
+		}
 }
 
 const Content = ()=>{
@@ -263,7 +283,7 @@ const playStop = (index) => {
 									temp[index].status = "save"
 									temp[index].text = text
 									setQuestions(temp)
-
+									calculateP(index)
 									console.log(temp)
 							}}><i class="fas fa-clock mr-2"></i>Save</li>
 							<li class="tag__item play blue" onClick = {()=>{
@@ -301,7 +321,7 @@ const playStop = (index) => {
 			);
 		})}
 		</div>
-		<button type="button"  className="report-button" onClick={()=>calculatePercentage()}>Generate Report</button>
+		<button type="button"  className="report-button" onClick={()=>		handleOpen()}>Generate Report</button>
 		</section>
 		<Dialog
         open={open}
@@ -319,7 +339,7 @@ const playStop = (index) => {
 						<Rating name="read-only" value={calculateRating(i)} readOnly />
 						{
 							correct[i]<6?
-							<p>Poor Performance!! Need to rewise the concepts</p>
+							<p>Need to rewise the concept</p>
 							:
 							correct[i]>=6 && correct[i]<=10 ?
 							<p>Good Performance !! Keep learning</p>
@@ -344,7 +364,7 @@ const playStop = (index) => {
     ['Question - 5', time[4]],
   ]}
   options={{
-    title: 'Time Taken'
+    title: 'Time Taken (in seconds)'
   }}
   rootProps={{ 'data-testid': '1' }}
 />
