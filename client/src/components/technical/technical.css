@@ -128,7 +128,16 @@ a, a:hover {
 .postcard:hover .postcard__bar {
   width: 100px;
 }
-
+.modal{
+  width: 80vw;
+  height: 80vh;
+}
+.modal-container{
+  display: flex;
+  justify-content: space-around;
+  border: 0.2px solid #dadada;
+  padding: 2px;
+}
 @media screen and (min-width: 769px) {
   .postcard {
     flex-wrap: inherit;

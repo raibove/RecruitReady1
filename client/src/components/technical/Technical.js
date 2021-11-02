@@ -2,11 +2,15 @@ import './technical.css';
 import React, {useEffect, useRef, useState} from 'react';
 import {firestore} from '../../firebase/config';
 import Sound from "react-sound";
-import useInterval from ".././audio/useInterval";
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
+import DialogTitle from '@mui/material/DialogTitle';
+import DialogContent from '@mui/material/DialogContent';
+import Dialog from '@mui/material/Dialog';
+import { Chart } from "react-google-charts";
+import Rating from '@mui/material/Rating';
 
 const style = {
   position: 'absolute',
@@ -42,7 +46,8 @@ function Technical() {
 		["stack", "linked", "list", "array", "string", "tree", "binary", "bst", "queue", "heap", "trie", "graph", "singly", "doubly", "min", "max", "search", "circular", "hash", "table", "hashmap", "map", "set", "hashset", "priority", "deque", "vector", "segment", "matrix", "2d"],
 		["object", "oriented", "programming", "oop", "derive", "class", "another", "parent", "child", "single", "multiple", "multilevel", "sub", "super", "properties", "inherited", "code", "re-usability", "methods", "existing", "reuse", "Hierarchical", "hybrid"    , "private", "protected", "public"]
 	]
-	const correct = [0,0,0,0,0]
+	const [correct, setCorrect] = useState([0,0,0,0,0])
+	const [time, setTime] = useState([0,0,0,0,0])
 	const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
 	const mic = new SpeechRecognition()
 
@@ -96,6 +101,9 @@ function Technical() {
 			let tm = endTime - startTime
 			tm = tm/1000
 			t[index].time = tm
+			let x   = time 
+			x[index] = tm 
+			setTime(x)
 		  };
 		  setMediaRecorder(newMediaRecorder);
 		  setQuestions(t)
@@ -150,8 +158,10 @@ const calculatePercentage = ()=>{
 					count++;
 				}
 			}
-			//console.log(count)
-			correct[i] = count
+			console.log(count)
+			let c = [...correct]
+			c[i] = count
+			setCorrect(c)
 		}else{
 			console.log("")
 		}
@@ -180,6 +190,15 @@ const playStop = (index) => {
 	setQuestions(t)
   };
 
+  const calculateRating = (i)=>{
+	  let rate = 0
+	  let total = keywords[i].length
+	  rate = 100*correct[i]
+	  rate = rate/total
+	  console.log(correct)
+	  console.log(rate)
+	  return rate
+  }
     return (
         <div className="container">
             <h1 className="text-center">Technical</h1>
@@ -282,24 +301,55 @@ const playStop = (index) => {
 			);
 		})}
 		</div>
-		<button type="button"  className="btn btn-primary report-button" data-toggle="modal" data-target="#myModal" onClick={()=>calculatePercentage()}>Generate Report</button>
+		<button type="button"  className="report-button" onClick={()=>calculatePercentage()}>Generate Report</button>
 		</section>
-<Modal
+		<Dialog
         open={open}
         onClose={handleClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
+		fullWidth="true"
+        maxWidth="md"
       >
-       <div>
-	   		<h2>Technical Interview Report Analysis</h2>
-			   <p>dsd</p>
-			   {questions.map((q,i)=>{
-				<div key={i}>
+	   		<DialogTitle>Technical Interview Report Analysis</DialogTitle>
+			   <DialogContent>
+				   <hr/>
+			   {questions.map((q,i)=>(
+				<div key={i} className="modal-container">
 					<p>{q.question}</p>
+					<div className="rating-container">
+						<Rating name="read-only" value={calculateRating(i)} readOnly />
+						{
+							correct[i]<6?
+							<p>Poor Performance!! Need to rewise the concepts</p>
+							:
+							correct[i]>=6 && correct[i]<=10 ?
+							<p>Good Performance !! Keep learning</p>
+							:
+							<p>Excellent Performance !!</p>
+						}
+					</div>
 				</div>
-				})}
-	   </div>
-      </Modal>
+				))}
+				   <hr/>
+				   <Chart
+  width={'500px'}
+  height={'300px'}
+  chartType="PieChart"
+  loader={<div>Loading Chart</div>}
+  data={[
+    ['Question', 'Time'],
+    ['Question - 1', time[0]],
+    ['Question - 2', time[1]],
+    ['Question - 3', time[2]],
+    ['Question - 4', time[3]],
+    ['Question - 5', time[4]],
+  ]}
+  options={{
+    title: 'Time Taken'
+  }}
+  rootProps={{ 'data-testid': '1' }}
+/>
+			   </DialogContent>
+      </Dialog>
     </div>
     )
 }
