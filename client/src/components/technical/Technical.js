@@ -335,17 +335,17 @@ const playStop = (index) => {
 				}
 			</div>
 		</div>
-			);
+		);
 		})}
 		</div>
 		<button type="button"  className="report-button" onClick={()=>		handleOpen()}>Generate Report</button>
 		</section>
 		<Dialog
-        open={open}
-        onClose={handleClose}
-		fullWidth="true"
-        maxWidth="md"
-      >
+			open={open}
+			onClose={handleClose}
+			fullWidth="true"
+			maxWidth="md"
+      	>
 	   		<DialogTitle>Technical Interview Report Analysis</DialogTitle>
 			   <DialogContent>
 				   <hr/>
