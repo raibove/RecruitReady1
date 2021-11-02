@@ -3,6 +3,22 @@ import React, {useEffect, useRef, useState} from 'react';
 import {firestore} from '../../firebase/config';
 import Sound from "react-sound";
 import useInterval from ".././audio/useInterval";
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import Modal from '@mui/material/Modal';
+
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+};
 
 
 function Technical() {
@@ -11,6 +27,11 @@ function Technical() {
 	const [mediaRecorder, setMediaRecorder] = useState(null);
 	const [ind, setInd] = useState(0)
 	const [text, setText] = useState("")
+	const [open , setOpen] = useState(false);
+
+	const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+
 	let startTime = 0
 	let endTime = 0
 
@@ -21,6 +42,7 @@ function Technical() {
 		["stack", "linked", "list", "array", "string", "tree", "binary", "bst", "queue", "heap", "trie", "graph", "singly", "doubly", "min", "max", "search", "circular", "hash", "table", "hashmap", "map", "set", "hashset", "priority", "deque", "vector", "segment", "matrix", "2d"],
 		["object", "oriented", "programming", "oop", "derive", "class", "another", "parent", "child", "single", "multiple", "multilevel", "sub", "super", "properties", "inherited", "code", "re-usability", "methods", "existing", "reuse", "Hierarchical", "hybrid"    , "private", "protected", "public"]
 	]
+	const correct = [0,0,0,0,0]
 	const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
 	const mic = new SpeechRecognition()
 
@@ -82,14 +104,7 @@ function Technical() {
 		  console.log("The following getUserMedia error occured: " + err);
 		});
 	}
-/*
-	const setText = (transcript)=>{
-		let temp = questions 
-		temp[ind].text = transcript 
-		setQuestions(temp)
 
-	}
-*/
 	const record = async (data, index) => {
 		navigator.permissions.query({ name: "microphone" }).then(function(result) {
 		  if (result.state !== "granted") {
@@ -130,21 +145,35 @@ const calculatePercentage = ()=>{
 			console.log(answer)
 			console.log(keyword)
 			let count = 0;
-			for(let i =0;i<answer.length;i++){
-				if(keyword.has(answer[i])){
-
+			for(let j =0;j<answer.length;j++){
+				if(keyword.has(answer[j])){
 					count++;
 				}
 			}
-			console.log(count)
+			//console.log(count)
+			correct[i] = count
 		}else{
 			console.log("")
 		}
+		handleOpen();
 	})
 	
 	
 }
 
+const Content = ()=>{
+	return(
+		<div>
+		{questions.map((q,i)=>{
+			<div key={i}>
+				{console.log(q)}
+				<p>{q.question}</p>
+				
+			</div>
+		})}
+		</div>
+	)
+}
 const playStop = (index) => {
 	let t = questions 
 	t[index].playStatus = Sound.status.STOPPED
@@ -253,28 +282,24 @@ const playStop = (index) => {
 			);
 		})}
 		</div>
-		<button type="button"  className="btn btn-primary report-button" data-toggle="modal" data-target="#exampleModal" onClick={()=>calculatePercentage()}>Generate Report</button>
+		<button type="button"  className="btn btn-primary report-button" data-toggle="modal" data-target="#myModal" onClick={()=>calculatePercentage()}>Generate Report</button>
 		</section>
-
-		<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-			<div class="modal-dialog" role="document">
-				<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
-					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-					</button>
+<Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+       <div>
+	   		<h2>Technical Interview Report Analysis</h2>
+			   <p>dsd</p>
+			   {questions.map((q,i)=>{
+				<div key={i}>
+					<p>{q.question}</p>
 				</div>
-				<div class="modal-body">
-					...
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-					<button type="button" class="btn btn-primary">Save changes</button>
-				</div>
-				</div>
-			</div>
-			</div>
+				})}
+	   </div>
+      </Modal>
     </div>
     )
 }
