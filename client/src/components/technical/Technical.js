@@ -10,10 +10,16 @@ function Technical() {
 	const [questions, setQuestions] = useState([]);	
 	const [mediaRecorder, setMediaRecorder] = useState(null);
 	const [ind, setInd] = useState(0)
-	const [delay] = useState(1000);
 	let startTime = 0
 	let endTime = 0
 
+	const keywords = [
+		["Search", "sorted", "array", "repeatedly", "dividing", "search", "interval", "half", "whole", "array", "value", "of", "the", "search", "key", "less", "than", "item", "in", "middle", "interval", "interval", "lower", "half", "upper", "half", "Repeatedly", "check", "until", "found",  "interval", "empty"],
+		["stack", "linked", "list", "array", "string", "tree", "binary", "bst", "queue", "heap", "trie", "graph", "singly", "doubly", "min", "max", "search", "circular", "hash", "table", "hashmap", "map", "set", "hashset", "priority", "deque", "vector", "segment", "matrix", "2d"],
+		["many", "multiple", "forms", "run", "time", "compile", "OOPs", "OOP", "instances", "different", "poly", "morph", "property", "object", "oriented", "programming", "overloading", "function", "overriding", "virtual", "class", "classes", "names", "friend", "polymorphism", "static", "dynamic", "binding", "operator"],
+		["linked", "list", "link" ,"next", "data", "nodes", "node", "memory", "fields", "two", "address", "pointer", "null", "head", "linear","structure","reference","field","doubly", "circular", "singly"],
+		["object", "oriented", "programming", "oop", "derive", "class", "another", "parent", "child", "single", "multiple", "multilevel", "sub", "super", "properties", "inherited", "code", "re-usability", "methods", "existing", "reuse", "Hierarchical", "hybrid"    , "private", "protected", "public"]
+	]
 	const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
 	const mic = new SpeechRecognition()
 
@@ -76,7 +82,6 @@ function Technical() {
 		});
 	}
 
-
 	const setText = (transcript)=>{
 		let temp = questions 
 		temp[ind].text = transcript 
@@ -91,7 +96,6 @@ function Technical() {
 			navigator.mediaDevices.getUserMedia({ audio: true }).then(() => {});
 		  }
 		});
-
 		await startListening(index);
 	  };
 	
@@ -117,6 +121,26 @@ function Technical() {
 		})
 },[])
 
+const calculatePercentage = ()=>{	
+	questions.forEach((q,i)=>{
+		if(q.text!==null){
+			var keyword = new Set(keywords[i]);
+			let answer = q.text.split(" ");
+			let count = 0;
+			for(let i =0;i<answer.length;i++){
+				if(keyword.has(answer[i])){
+					count++;
+				}
+			}
+			console.log(count)
+		}else{
+			console.log("")
+		}
+	})
+	
+	
+}
+
 const playStop = (index) => {
 	let t = questions 
 	t[index].playStatus = Sound.status.STOPPED
@@ -137,7 +161,7 @@ const playStop = (index) => {
 				<img class="postcard__img" src="https://picsum.photos/1000/1000" alt="Image Title" />
 			</a>
 			<div class="postcard__text t-dark">
-				<h1 class="postcard__title blue"><a href="#"></a></h1>
+				<h1 class="postcard__title blue"><a href="#">{data.question}</a></h1>
 				<div class="postcard__subtitle small">
 					<time datetime="2020-05-25 12:00:00">
 						<i class="fas fa-calendar-alt mr-2"></i>Mon, May 25th 2021
@@ -223,10 +247,28 @@ const playStop = (index) => {
 			);
 		})}
 		</div>
-		<button className="report-button">Generate Report</button>
-
+		<button type="button"  className="btn btn-primary report-button" data-toggle="modal" data-target="#exampleModal" onClick={()=>calculatePercentage()}>Generate Report</button>
 		</section>
 
+		<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					...
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					<button type="button" class="btn btn-primary">Save changes</button>
+				</div>
+				</div>
+			</div>
+			</div>
     </div>
     )
 }
