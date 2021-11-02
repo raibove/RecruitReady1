@@ -2,6 +2,7 @@ import './technical.css';
 import React, {useEffect, useRef, useState} from 'react';
 import {firestore} from '../../firebase/config';
 import Sound from "react-sound";
+import useInterval from ".././audio/useInterval";
 
 
 function Technical() {
@@ -9,6 +10,9 @@ function Technical() {
 	const [questions, setQuestions] = useState([]);	
 	const [mediaRecorder, setMediaRecorder] = useState(null);
 	const [ind, setInd] = useState(0)
+	const [delay] = useState(1000);
+	let startTime = 0
+	let endTime = 0
 
 	const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
 	const mic = new SpeechRecognition()
@@ -44,6 +48,7 @@ function Technical() {
 		.then(stream => {
 		  const newMediaRecorder = new MediaRecorder(stream);
 		  newMediaRecorder.start();
+		  startTime = new Date()
 		  let chunks = [];
 		  newMediaRecorder.ondataavailable = function(e) {
 			chunks.push(e.data);
@@ -58,6 +63,10 @@ function Technical() {
 			audio.src = audioURL;
 			t[index].blobFile = blob  
 			t[index].audio = audio
+			endTime = new Date()
+			let tm = endTime - startTime
+			tm = tm/1000
+			t[index].time = tm
 		  };
 		  setMediaRecorder(newMediaRecorder);
 		  setQuestions(t)
@@ -97,6 +106,7 @@ function Technical() {
 					ele.blobFile = null 
 					ele.audio = null 
 					ele.text = null
+					ele.time = 0
 					ele.playStatus = Sound.status.STOPPED
 					data.push(ele)
 				});
@@ -107,10 +117,10 @@ function Technical() {
 		})
 },[])
 
-
 const playStop = (index) => {
 	let t = questions 
-	questions[index].playStatus = Sound.status.STOPPED
+	t[index].playStatus = Sound.status.STOPPED
+	setQuestions(t)
   };
 
     return (
@@ -127,7 +137,7 @@ const playStop = (index) => {
 				<img class="postcard__img" src="https://picsum.photos/1000/1000" alt="Image Title" />
 			</a>
 			<div class="postcard__text t-dark">
-				<h1 class="postcard__title blue"><a href="#">{data.question}</a></h1>
+				<h1 class="postcard__title blue"><a href="#"></a></h1>
 				<div class="postcard__subtitle small">
 					<time datetime="2020-05-25 12:00:00">
 						<i class="fas fa-calendar-alt mr-2"></i>Mon, May 25th 2021
@@ -141,7 +151,7 @@ const playStop = (index) => {
 						let temp = [...questions ]
 						temp[index].status = "stop" 
 						setQuestions(temp)
-
+						setInd((index)=> index)
 						record(data, index)
 
 					}}><i class="fas fa-tag mr-2"></i>Start</li>
@@ -176,7 +186,7 @@ const playStop = (index) => {
 									let temp = [...questions ]
 									temp[index].status = "save"
 									setQuestions(temp)
-									setInd(index)
+									console.log(temp)
 							}}><i class="fas fa-clock mr-2"></i>Save</li>
 							<li class="tag__item play blue" onClick = {()=>{
 									let temp = [...questions ]
