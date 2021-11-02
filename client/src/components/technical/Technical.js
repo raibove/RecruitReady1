@@ -211,13 +211,30 @@ const playStop = (index) => {
   };
 
   const calculateRating = (i)=>{
-	  let rate = 0
-	  let total = keywords[i].length
-	  rate = 100*correct[i]
-	  rate = rate/total
-	  console.log(correct)
-	  console.log(rate)
-	  return rate
+	let rate = 0
+
+	  /*
+	let total = keywords[i].length
+	rate = 100*correct[i]
+	rate = rate/total
+
+	console.log(correct)
+	console.log(rate)
+	*/
+	
+	if(correct[i]>10){
+	  rate = 5
+	}else if(correct[i]>=8 && correct[i]<=10){
+	 rate = 4;
+	}else if(correct[i]>=6 && correct[i]<8){
+		rate = 3
+	}else if(correct[i]>=3 && correct[i]<6){
+		rate = 2;
+	}else{
+		rate = 1;
+	}
+
+	return rate
   }
     return (
         <div className="container">
